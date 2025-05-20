@@ -18,11 +18,11 @@ namespace ImgRecon2
         List<Image> imgsTrain;
         private const int DataSize = 784;
         private const int DimSize = 28;
-        private const int epochs = 3;
+        private const int epochs = 1;
         private const int miniBatchSize = 32;
         private const float learningRate = 0.001f;
         private const float movingAvgBeta = 0.9f;
-        private static int[] networkForm = new int[] { DataSize, 64, 64, 64, 64, 10 };
+        private static int[] networkForm = new int[] { DataSize, 64, 32, 10 };
 
         public Main()
         {
@@ -50,7 +50,10 @@ namespace ImgRecon2
                             inputs[i % miniBatchSize][x * DimSize + y] = imgs[i].Data[x, y] / 255f;
 
                     if (i % miniBatchSize == miniBatchSize - 1)
+                    {
+                        Console.WriteLine(i);
                         nn.Train(inputs, targets);
+                    }
                 }
             }
 
@@ -61,7 +64,7 @@ namespace ImgRecon2
             {
                 for (int x = 0; x < DimSize; x++)
                     for (int y = 0; y < DimSize; y++)
-                        input[x * DimSize + y] = imgsTrain[i].Data[x, y];
+                        input[x * DimSize + y] = imgsTrain[i].Data[x, y] / 255f;
 
                 float[] ff = nn.FeedForward(input);
                 if (ArgMax(ff) == imgsTrain[i].Label)
